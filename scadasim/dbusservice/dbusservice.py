@@ -4,10 +4,12 @@ import dbus
 import dbus.service
 import dbus.mainloop.glib
 from gi.repository import GObject as gobject
+import threading
 
 class DBusService(threading.Thread):
 
     def run(self):
+        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         db = DBusWorker()
         db.loop.run()
 
@@ -15,13 +17,11 @@ class DBusService(threading.Thread):
 class DBusWorker(dbus.service.Object):
 
     def __init__(self):
-        self.session_bus = dbus.ServiceBus()
+        self.session_bus = dbus.SystemBus()
         self.name = dbus.service.BusName("com.root9b.scadasim", bus=self.session_bus)
-        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self.loop = gobject.MainLoop()
-        dbusobject = SomeObject()
 
-        dbus.service.Object.__init__(self, name, '/')
+        dbus.service.Object.__init__(self, self.name, '/')
 
     @dbus.service.method("com.root9b.scadasim", in_signature='s', out_signature='as')
     def HelloWorld(self, hello_message):
