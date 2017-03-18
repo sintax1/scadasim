@@ -3,8 +3,7 @@
 from scadasim.devices import Device
 import logging
 
-logging.basicConfig()
-log = logging.getLogger()
+log = logging.getLogger('scadasim')
 
 # Sensors
 class Sensor(Device):

@@ -10,10 +10,7 @@ from datetime import datetime
 import copy
 
 import logging
-
-logging.basicConfig()
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
+log = logging.getLogger('scadasim')
 
 class DBusService(threading.Thread):
 

@@ -7,8 +7,7 @@ from datetime import datetime
 import yaml
 import time
 
-logging.basicConfig()
-log = logging.getLogger()
+log = logging.getLogger('scadasim')
 
 class InvalidDevice(Exception):
         """Exception thrown for bad device types

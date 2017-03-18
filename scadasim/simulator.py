@@ -4,13 +4,19 @@ import sys
 import logging
 
 logging.basicConfig()
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
+log = logging.getLogger('scadasim')
+log.setLevel(logging.WARN)
 
 class Simulator(object):
 
-    def __init__(self, dbus=False):
+    def __init__(self, dbus=False, debug=0):
         self.dbus = dbus
+
+        if debug == 1:
+            log.setLevel(logging.INFO)
+        if debug >= 2:
+            log.setLevel(logging.DEBUG)
+
         if self.dbus:
             from dbusservice import DBusService
             self.dbusservice = DBusService()

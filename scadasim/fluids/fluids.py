@@ -3,6 +3,9 @@
 import random
 import uuid
 import yaml
+import logging
+
+log = logging.getLogger('scadasim')
 
 # Fluids
 class Fluid(yaml.YAMLObject):
