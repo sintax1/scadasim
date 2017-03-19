@@ -15,7 +15,7 @@ $ make test
 
 ## Usage
 ```python
-# Import a fluid with environmental properties
+# Import a fluid with properties
 from scadasim.fluids import Water
 
 # Import the devices
