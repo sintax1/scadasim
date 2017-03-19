@@ -13,7 +13,7 @@ log.setLevel(logging.DEBUG)
 # Devices
 class Device(object):
 
-    allowed_device_types = ['pump', 'valve', 'tank', 'reservoir', 'filter', 'chlorinator']
+    allowed_device_types = ['pump', 'valve', 'tank', 'reservoir', 'filter', 'chlorinator', 'sensor']
 
     def __init__(self, device_type=None, fluid=None, label='', worker_frequency=1):
         self.uid = str(uuid.uuid4())[:8]
