@@ -36,5 +36,44 @@ valve2.open()
 pump1.turn_on()
 ```
 
+## Extending the simulator by adding your own device
+```python
+from scadasim.devices import Device
+
+class MyCustomDevice(Device):
+    def __init__(self, myvariable=0, **kwargs):
+        # Add your custom variables here
+        self.myvariable = myvariable
+        super(MyCustomDevice, self).__init__(device_type="tank", **kwargs)
+
+    def input(self, fluid, volume):
+        """Receive `volume` amount of `fluid` and return the amount your device is willing to receive
+            accepted_volume = 0: Don't accept any fluid
+            accepted_volume = volume: Accept it all
+            accepted_volume = volume / 2: Restrict flow by accepting a fraction of the volume
+        """
+        ...
+        Do something here with the fluid that the connected devices send to your device's input
+        ...
+        return accepted_volume
+
+    def output(self, to_device, volume):
+        """ `to_device` is pulling this device's output (sucking fluid) in the mount of `volume`
+        """
+        # If you accept the request, send the fluid to the requesting devices input
+        accepted_volume = to_device.input(self.fluid, volume)
+
+    def worker(self):
+        """Do something each cycle of `worker_frequency`
+            Update fluid, pull inputs, push outputs, etc.
+            If your device only performs work based on input and output stimulation, 
+            there may be no need to have this worker. Such as a valve.
+        """
+        pass
+        
+mydevice = MyCustomDevice(fluid=water, myvariable=10) 
+        
+```
+
 ## TODO
 Working on adding the sensors that will connect to the devices, which will eventually connect to the PLC simulators.
