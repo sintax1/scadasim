@@ -2,49 +2,12 @@
 
 import threading
 import logging
-import random
 import uuid
 from datetime import datetime
 
 logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-
-# Fluids
-class Fluid(object):
-    """Base class for all fluids
-    """
-    allowed_fluid_types = ['water']
-
-    def __init__(self, fluid_type=None):
-        self.uid = str(uuid.uuid4())[:8]
-        self.fluid_type = fluid_type
-        self.ph = None   					# For later use
-        self.salinity = None                # For later use
-        self.pressure = None                # For later use
-        self.flowrate = None                # For later use
-
-        if (not fluid_type) or (fluid_type not in self.allowed_fluid_types):
-            raise InvalidFluid("\'%s\' in not a valid fluid type" % fluid_type)
-
-    def __repr__(self):
-        return """[%s][%s]
-        	pH: %s
-        	Salinity: %s
-        	Pressure: %s
-        	FlowRate: %s
-        	""" % (self.uid, self.fluid_type, self.ph, self.salinity, self.pressure, self.flowrate)
-
-    class InvalidFluid(Exception):
-        """Exception handler for bad fluid types
-        """
-        def __init__(self, message):
-            super(InvalidFluid, self).__init__(message)
-
-class Water(Fluid):
-    def __init__(self, **kwargs):
-        super(Water, self).__init__(fluid_type='water', **kwargs)
-        self.ph = round(random.uniform(6.5, 8.0), 2)
 
 
 # Devices
@@ -257,30 +220,5 @@ class Reservoir(Tank):
     def __init__(self, **kwargs):
     	self.device_type = 'reservoir'
         super(Reservoir, self).__init__(**kwargs)
-
-
-
-"""
-from devices import Water, Valve, Pump, Tank, Reservoir
-
-water = Water()
-reservoir1 = Reservoir(label="Reservoir1", fluid=water, volume=100000000)
-tank2 = Tank(label="Tank2")
-pump1 = Pump(label="Pump1")
-valve1 = Valve(label="Valve1")
-valve2 = Valve(label="Valve2")
-
-reservoir1.add_output(valve1)
-valve1.add_output(pump1)
-pump1.add_output(valve2)
-valve2.add_output(tank2)
-
-valve1.open()
-valve2.open()
-pump1.turn_on()
-
-
-water.ph = 5
-"""
 
 

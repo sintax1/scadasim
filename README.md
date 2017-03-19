@@ -10,10 +10,13 @@ $ pip install .
 
 ## Usage
 ```python
-# Import the devices
-from scadasim.devices import Water, Valve, Pump, Tank, Reservoir
+# Import a fluid with environmental properties
+from scadasim.fluids import Water
 
-# Instantiate the devices
+# Import the devices
+from scadasim.devices import Valve, Pump, Tank, Reservoir
+
+# Instantiate the fluid and devices
 water = Water()
 reservoir1 = Reservoir(label="Reservoir1", fluid=water, volume=100000000)
 tank2 = Tank(label="Tank2")
