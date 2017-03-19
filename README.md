@@ -8,6 +8,11 @@ $ cd scadasim
 $ pip install .
 ```
 
+## Running Tests
+```bash
+$ make test
+```
+
 ## Usage
 ```python
 # Import a fluid with environmental properties
@@ -74,6 +79,3 @@ class MyCustomDevice(Device):
 mydevice = MyCustomDevice(fluid=water, myvariable=10) 
         
 ```
-
-## TODO
-Working on adding the sensors that will connect to the devices, which will eventually connect to the PLC simulators.
