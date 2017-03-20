@@ -12,8 +12,45 @@ $ pip install .
 ```bash
 $ make test
 ```
+## Running a simulation using a configuration file
+```bash
+$ python run.py -c [YAML config]
+```
+## Example YAML Config
+```yaml
+devices:
+  - !reservoir
+    label: reservoir1
+    volume: 1000
+    fluid: !water {}
+  - !valve
+    label: valve1
+    state: 'open'
+  - !pump
+    label: pump1
+    state: 'on'
+  - !valve
+    label: valve2
+    state: 'open'
+  - !tank
+    label: tank1
 
-## Usage
+connections:
+  reservoir1:
+    outputs: 
+     - valve1
+  valve1:
+    outputs:
+     - pump1
+  pump1:
+    outputs:
+     - valve2
+  valve2:
+    outputs:
+     - tank1
+```
+
+## Running a simulation within your own python script
 ```python
 # Import a fluid with properties
 from scadasim.fluids import Water
