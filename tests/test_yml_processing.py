@@ -3,9 +3,10 @@ from scadasim.utils import parse_yml, build_simulation
 def test_yml_processing():
 
     config = parse_yml('tests/test_water_plant.yml')
-    devices = build_simulation(config)
+    settings, devices = build_simulation(config)
 
-    print config
+    print settings
+    print devices
 
     # Disable the workers
     for device_label in devices:
@@ -16,9 +17,3 @@ def test_yml_processing():
     assert devices['valve1'].uid in devices['pump1'].inputs
     assert devices['reservoir1'].uid in devices['valve1'].inputs
     assert not devices['reservoir1'].inputs
-
-
-pump1.turn_on()
-
-valve1.open()
-valve2.open()

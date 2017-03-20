@@ -11,6 +11,7 @@ def parse_yml(path_to_yml_file):
     return config
 
 def build_simulation(config):
+    settings = config['settings']
     devices = {}
 
     # Process devices
@@ -26,4 +27,4 @@ def build_simulation(config):
             for dev_input in connections['inputs']:
                 devices[device_label].add_input(devices[dev_input])
 
-    return devices
+    return settings, devices

@@ -5,10 +5,10 @@ import logging
 import uuid
 from datetime import datetime
 import yaml
+import time
 
 logging.basicConfig()
 log = logging.getLogger()
-log.setLevel(logging.INFO)
 
 class InvalidDevice(Exception):
         """Exception thrown for bad device types
@@ -27,14 +27,15 @@ class Device(yaml.YAMLObject):
         self.inputs = {}
         self.outputs = {}
         self.fluid = fluid
+        self.active = False
         # Time interval in seconds. set to None if the device doesnt need a worker loop
         self.worker_frequency = worker_frequency
+        self.speed = 1
 
         if (not self.device_type) or (self.device_type not in self.allowed_device_types):
             raise InvalidDevice("\'%s\' in not a valid device type" % self.device_type)
 
-        #log.debug("%s initialized" % self)
-        #self.activate()
+        log.info("%s: Initialized" % self)
 
     @classmethod
     def from_yaml(cls, loader, node):
@@ -47,6 +48,7 @@ class Device(yaml.YAMLObject):
         if device.uid not in self.inputs:
             self.inputs[device.uid] = device
             device.add_output(self)
+            log.info("%s: Added input <- %s" % (self, device))
 
     def add_output(self, device):
         """Add the connected device to our outputs and add this device to connected device's inputs
@@ -54,17 +56,35 @@ class Device(yaml.YAMLObject):
         if device.uid not in self.outputs:
             self.outputs[device.uid] = device
             device.add_input(self)
+            log.info("%s: Added output -> %s" % (self, device))
 
-    def activate(self):
+    def run(self):
         """Executed at atleast once and at regular intervals if `worker_frequency` is not None.
             Used to call worker method
         """
-        #log.debug("%s %s activated" % (datetime.now().time(), self))
-        self.worker()
-        if self.worker_frequency:
-            t = threading.Timer(self.worker_frequency, self.activate)
-            t.daemon = True
-            t.start()
+        if self.active:
+            log.debug("%s %s" % (self, datetime.now()))
+            self.worker()
+        
+            if self.worker_frequency:
+                # Calculate the next run time based on simulation speed and device frequency
+                delay = (-time.time()%(self.speed*self.worker_frequency))
+                t = threading.Timer(delay, self.run)
+                t.daemon = True
+                t.start()
+
+    def activate(self):
+        """Set this device as active so the worker gets called"""
+        if self.active == False:
+            self.active = True
+            self.run()
+        log.info("%s: Active" % self)
+
+    def deactivate(self):
+        """Set this device as inactive to prevent the worker from being called"""
+        if self.active == True:
+            self.active = False
+        log.info("%s: Inactive" % self)
 
     def worker(self):
         """Do something each cycle of `worker_frequency`
@@ -223,8 +243,6 @@ class Tank(Device):
 
     def worker(self):
         """For debugging only. Used to display the tank's volume"""
-        log.debug("%s volume: %s" % (self, self.volume))
-        log.debug(self.fluid)
         pass
 
 

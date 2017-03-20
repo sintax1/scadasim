@@ -16,6 +16,11 @@ def test_devices():
     pump1.add_output(valve2)
     valve2.add_output(tank2)
 
+    reservoir1.activate()
+    valve1.activate()
+    pump1.activate()
+    valve2.activate()
+
     valve1.open()
     valve2.open()
     pump1.turn_on()

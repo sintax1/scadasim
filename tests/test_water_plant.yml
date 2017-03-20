@@ -1,15 +1,22 @@
+settings:
+  speed: 1
+
 devices:
-  - !tank
-    label: tank1
-  - !valve
-    label: valve1
-  - !valve
-    label: valve2
   - !reservoir
     label: reservoir1
+    volume: 1000
     fluid: !water {}
+  - !valve
+    label: valve1
+    state: 'open'
   - !pump
     label: pump1
+    state: 'on'
+  - !valve
+    label: valve2
+    state: 'open'
+  - !tank
+    label: tank1
 
 connections:
   reservoir1:

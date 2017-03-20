@@ -19,6 +19,12 @@ def test_sensors():
     valve2.add_output(phsensor)
     phsensor.add_output(tank2)
 
+    reservoir1.activate()
+    valve1.activate()
+    pump1.activate()
+    valve2.activate()
+    phsensor.activate()
+
     valve1.open()
     valve2.open()
     pump1.turn_on()

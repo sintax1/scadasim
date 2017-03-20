@@ -2,12 +2,6 @@
 
 from scadasim.devices import Device
 
-import logging
-
-logging.basicConfig()
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
-
 # Sensors
 class Sensor(Device):
     def __init__(self, worker_frequency=1, **kwargs):
@@ -54,6 +48,8 @@ class pHSensor(Sensor):
         """When fluid comes in, store the fluid context, and pass it downstream to all connected devices
         """
         self.ph = fluid.ph
+
+        log.debug("ph: ", self.ph)
         
         accepted_volume = 0
         for o in self.outputs:
