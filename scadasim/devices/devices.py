@@ -90,9 +90,9 @@ class Device(yaml.YAMLObject):
 class Pump(Device):
     yaml_tag = u'!pump'
 
-    def __init__(self, state='off', **kwargs):
+    def __init__(self, state='off', device_type='pump', **kwargs):
     	self.state = state
-        super(Pump, self).__init__(device_type='pump', **kwargs)
+        super(Pump, self).__init__(device_type=device_type, **kwargs)
 
     def worker(self):
         """Manipulate the fluid just as this device would in the real world
@@ -136,9 +136,9 @@ class Pump(Device):
 class Valve(Device):
     yaml_tag = u'!valve'
 
-    def __init__(self, state='closed', **kwargs):
+    def __init__(self, state='closed', device_type='valve', **kwargs):
     	self.state = state
-        super(Valve, self).__init__(device_type="valve", worker_frequency=None, **kwargs)
+        super(Valve, self).__init__(device_type=device_type, worker_frequency=None, **kwargs)
 
     def open(self):
         self.state = 'open'
@@ -178,9 +178,9 @@ class Valve(Device):
 class Tank(Device):
     yaml_tag = u'!tank'
 
-    def __init__(self, volume=0, **kwargs):
+    def __init__(self, volume=0, device_type='tank', **kwargs):
     	self.volume = volume
-        super(Tank, self).__init__(device_type="tank", **kwargs)
+        super(Tank, self).__init__(device_type=device_type, **kwargs)
 
     def __increase_volume(self, volume):
         """Raise the tank's volume by `volume`"""
@@ -230,7 +230,6 @@ class Reservoir(Tank):
     yaml_tag = u'!reservoir'
 
     def __init__(self, **kwargs):
-    	self.device_type = 'reservoir'
-        super(Reservoir, self).__init__(**kwargs)
+        super(Reservoir, self).__init__(device_type='reservoir', **kwargs)
 
 
