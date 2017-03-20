@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
 from scadasim.devices import Device
+import logging
+
+logging.basicConfig()
+log = logging.getLogger()
 
 # Sensors
 class Sensor(Device):
