@@ -15,6 +15,9 @@ pymodbus==1.2.0
 pymunk==4.0.0
 pyserial==2.7
 pyshark==0.3.6.3
+pytest==3.0.7
+PyYAML==3.12
+scadasim==0.1
 six==1.10.0
 trollius==1.0.4
 Twisted==15.0.0

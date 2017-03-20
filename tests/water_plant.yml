@@ -1,0 +1,30 @@
+Reservoir1:
+    type: reservoir
+    volume: 1000
+    fluid: water
+    outputs: 
+        - Valve1
+
+Valve1:
+    type: valve
+    outputs:
+        - Pump1
+
+Pump1:
+    type: pump
+    outputs: 
+        - Valve2
+
+Valve2:
+    type: valve
+    outputs: 
+        - pHSensor1
+
+pHSensor1:
+    type: sensor
+    outputs:
+        - Tank2
+
+Tank2:
+    type: tank
+
