@@ -80,7 +80,7 @@ pump1.turn_on()
 
 ## Extending the simulator by adding your own device, sensor, or fluid
 ```python
-# add to scadasim/devices/devices.py, scadasim/fluids/fluids.py or scadasim/sensors/sensors.py
+from scadasim.devices import Device
 
 class MyCustomDevice(Device):
     yaml_tag = u'!mycustomdevice' # So it can be used within YAML configs
@@ -115,6 +115,7 @@ class MyCustomDevice(Device):
         """
         pass
         
+# Use it
 mydevice = MyCustomDevice(fluid=water, myvariable=10) 
         
 ```
