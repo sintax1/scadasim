@@ -1,6 +1,10 @@
 # scada-simulator
 SCADA Simulator encompassing things from PLCs to devices such as valves, pumps, tanks, etc. and environmental properties such as water pH levels
 
+## Requirements
+    * gcc # For pycrypto
+    * python-pip
+
 ## Installation
 ```bash
 $ git clone https://github.com/sintax1/scadasim.git
