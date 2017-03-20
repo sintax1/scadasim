@@ -16,7 +16,7 @@ $ make test
 ```bash
 $ python run.py -c [YAML config]
 ```
-## Example YAML Config
+### Example YAML Config
 ```yaml
 devices:
   - !reservoir
