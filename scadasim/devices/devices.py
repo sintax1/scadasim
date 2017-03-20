@@ -8,7 +8,7 @@ import yaml
 
 logging.basicConfig()
 log = logging.getLogger()
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 class InvalidDevice(Exception):
         """Exception thrown for bad device types
@@ -34,7 +34,7 @@ class Device(yaml.YAMLObject):
             raise InvalidDevice("\'%s\' in not a valid device type" % self.device_type)
 
         #log.debug("%s initialized" % self)
-        self.activate()
+        #self.activate()
 
     @classmethod
     def from_yaml(cls, loader, node):
@@ -62,7 +62,9 @@ class Device(yaml.YAMLObject):
         #log.debug("%s %s activated" % (datetime.now().time(), self))
         self.worker()
         if self.worker_frequency:
-            threading.Timer(self.worker_frequency, self.activate).start()
+            t = threading.Timer(self.worker_frequency, self.activate)
+            t.daemon = True
+            t.start()
 
     def worker(self):
         """Do something each cycle of `worker_frequency`
