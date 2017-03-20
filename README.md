@@ -83,6 +83,7 @@ pump1.turn_on()
 from scadasim.devices import Device
 
 class MyCustomDevice(Device):
+    yaml_tag = u'!mycustomdevice' # So it can be used within YAML configs
     def __init__(self, myvariable=0, **kwargs):
         # Add your custom variables here
         self.myvariable = myvariable
