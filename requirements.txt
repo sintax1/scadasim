@@ -1,1 +1,2 @@
 PyYAML==3.12
+pytest==3.0.7
