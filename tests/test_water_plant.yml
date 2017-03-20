@@ -1,0 +1,26 @@
+devices:
+  - !tank
+    label: tank1
+  - !valve
+    label: valve1
+  - !valve
+    label: valve2
+  - !reservoir
+    label: reservoir1
+    fluid: !water {}
+  - !pump
+    label: pump1
+
+connections:
+  reservoir1:
+    outputs: 
+     - valve1
+  valve1:
+    outputs:
+     - pump1
+  pump1:
+    outputs:
+     - valve2
+  valve2:
+    outputs:
+     - tank1

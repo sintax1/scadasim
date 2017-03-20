@@ -4,15 +4,20 @@ import threading
 import logging
 import uuid
 from datetime import datetime
+import yaml
 
 logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 
+class InvalidDevice(Exception):
+        """Exception thrown for bad device types
+        """
+        def __init__(self, message):
+            super(InvalidDevice, self).__init__(message)
 
 # Devices
-class Device(object):
-
+class Device(yaml.YAMLObject):
     allowed_device_types = ['pump', 'valve', 'tank', 'reservoir', 'filter', 'chlorinator', 'sensor']
 
     def __init__(self, device_type=None, fluid=None, label='', worker_frequency=1):
@@ -25,11 +30,16 @@ class Device(object):
         # Time interval in seconds. set to None if the device doesnt need a worker loop
         self.worker_frequency = worker_frequency
 
-        if (not device_type) or (device_type not in self.allowed_device_types):
-            raise InvalidDevice("\'%s\' in not a valid device type" % dev_type)
+        if (not self.device_type) or (self.device_type not in self.allowed_device_types):
+            raise InvalidDevice("\'%s\' in not a valid device type" % self.device_type)
 
         #log.debug("%s initialized" % self)
         self.activate()
+
+    @classmethod
+    def from_yaml(cls, loader, node):
+        fields = loader.construct_mapping(node, deep=False)
+        return cls(**fields)
 
     def add_input(self, device):
         """Add the connected `device` to our inputs and add this device to the connected device's outputs
@@ -76,14 +86,10 @@ class Device(object):
     def __repr__(self):
         return "[%s][%s][%s]" % (self.uid, self.device_type, self.label)
 
-    class InvalidDevice(Exception):
-        """Exception thrown for bad device types
-        """
-        def __init__(self, message):
-            super(InvalidDevice, self).__init__(message)
-
 
 class Pump(Device):
+    yaml_tag = u'!pump'
+
     def __init__(self, state='off', **kwargs):
     	self.state = state
         super(Pump, self).__init__(device_type='pump', **kwargs)
@@ -128,6 +134,8 @@ class Pump(Device):
 
 
 class Valve(Device):
+    yaml_tag = u'!valve'
+
     def __init__(self, state='closed', **kwargs):
     	self.state = state
         super(Valve, self).__init__(device_type="valve", worker_frequency=None, **kwargs)
@@ -168,6 +176,8 @@ class Valve(Device):
 
 
 class Tank(Device):
+    yaml_tag = u'!tank'
+
     def __init__(self, volume=0, **kwargs):
     	self.volume = volume
         super(Tank, self).__init__(device_type="tank", **kwargs)
@@ -217,6 +227,8 @@ class Tank(Device):
 
 
 class Reservoir(Tank):
+    yaml_tag = u'!reservoir'
+
     def __init__(self, **kwargs):
     	self.device_type = 'reservoir'
         super(Reservoir, self).__init__(**kwargs)
