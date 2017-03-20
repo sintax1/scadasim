@@ -2,8 +2,8 @@
 SCADA Simulator encompassing things from PLCs to devices such as valves, pumps, tanks, etc. and environmental properties such as water pH levels
 
 ## Requirements
-    * gcc # For pycrypto
-    * python-pip
+   * gcc # For pycrypto
+   * python-pip
 
 ## Installation
 ```bash
