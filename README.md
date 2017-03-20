@@ -5,7 +5,7 @@ SCADA Simulator encompassing things from PLCs to devices such as valves, pumps, 
 ```bash
 $ git clone https://github.com/sintax1/scadasim.git
 $ cd scadasim
-$ pip install .
+$ make
 ```
 ## Running Tests
 ```bash
