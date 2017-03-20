@@ -7,17 +7,66 @@ $ git clone https://github.com/sintax1/scadasim.git
 $ cd scadasim
 $ pip install .
 ```
-
 ## Running Tests
 ```bash
 $ make test
 ```
 ## Running a simulation using a configuration file
 ```bash
-$ python run.py -c [YAML config]
+# Run default config
+$ make run
+-Or-
+# Run custom config
+$ python -i run.py -c [YAML config]
+INFO:root:[e660148d][reservoir][reservoir1]: Initialized
+INFO:root:[0efd0900][valve][valve1]: Initialized
+INFO:root:[db91f04a][pump][pump1]: Initialized
+INFO:root:[1d81d76b][valve][valve2]: Initialized
+INFO:root:[f41bb0d9][tank][tank1]: Initialized
+INFO:root:[0efd0900][valve][valve1]: Added input <- [e660148d][reservoir][reservoir1]
+INFO:root:[e660148d][reservoir][reservoir1]: Added output -> [0efd0900][valve][valve1]
+INFO:root:[db91f04a][pump][pump1]: Added input <- [0efd0900][valve][valve1]
+INFO:root:[0efd0900][valve][valve1]: Added output -> [db91f04a][pump][pump1]
+INFO:root:[f41bb0d9][tank][tank1]: Added input <- [1d81d76b][valve][valve2]
+INFO:root:[1d81d76b][valve][valve2]: Added output -> [f41bb0d9][tank][tank1]
+INFO:root:[1d81d76b][valve][valve2]: Added input <- [db91f04a][pump][pump1]
+INFO:root:[db91f04a][pump][pump1]: Added output -> [1d81d76b][valve][valve2]
+INFO:root:[1d81d76b][valve][valve2]: Active
+INFO:root:[f41bb0d9][tank][tank1]: Active
+INFO:root:[0efd0900][valve][valve1]: Active
+INFO:root:[e660148d][reservoir][reservoir1]: Active
+INFO:root:[db91f04a][pump][pump1]: Active
+>>> sim.devices
+{'valve2': [1d81d76b][valve][valve2], 'tank1': [f41bb0d9][tank][tank1], 'valve1': [0efd0900][valve][valve1], 'reservoir1': [e660148d][reservoir][reservoir1], 'pump1': [db91f04a][pump][pump1]}
+>>> sim.settings
+{'speed': 1}
+>>> sim.devices['tank1'].volume
+79
+>>> sim.devices['pump1'].turn_off()
+>>> sim.devices['tank1'].volume
+103
+>>> sim.devices['tank1'].volume
+103
+>>> sim.pause()
+INFO:root:[dd153bbb][valve][valve2]: Inactive
+INFO:root:[16960a58][tank][tank1]: Inactive
+INFO:root:[d4d9302d][valve][valve1]: Inactive
+INFO:root:[a2f02e65][reservoir][reservoir1]: Inactive
+INFO:root:[f1afd77b][pump][pump1]: Inactive
+>>> sim.start()
+INFO:root:[dd153bbb][valve][valve2]: Active
+INFO:root:[16960a58][tank][tank1]: Active
+INFO:root:[d4d9302d][valve][valve1]: Active
+INFO:root:[a2f02e65][reservoir][reservoir1]: Active
+INFO:root:[f1afd77b][pump][pump1]: Active
+>>> sim.stop()
+$
 ```
 ### Example YAML Config
 ```yaml
+settings:
+  speed: 1
+
 devices:
   - !reservoir
     label: reservoir1
@@ -54,7 +103,6 @@ connections:
 ```python
 # Import a fluid with properties
 from scadasim.fluids import Water
-
 # Import the devices
 from scadasim.devices import Valve, Pump, Tank, Reservoir
 
@@ -71,6 +119,12 @@ reservoir1.add_output(valve1)
 valve1.add_output(pump1)
 pump1.add_output(valve2)
 valve2.add_output(tank2)
+
+# Activate the devices
+reservoir1.activate()
+valve1.activate()
+pump1.activate()
+valve2.activate()
 
 # Manipulate the devices
 valve1.open()
