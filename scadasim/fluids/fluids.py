@@ -8,7 +8,7 @@ import yaml
 class Fluid(yaml.YAMLObject):
     """Base class for all fluids
     """
-    allowed_fluid_types = ['water']
+    allowed_fluid_types = ['water', 'chlorine']
 
     def __init__(self, fluid_type=None, ph=None, temperature=None, salinity=None, pressure=None, flowrate=None):
         self.uid = str(uuid.uuid4())[:8]
@@ -43,8 +43,15 @@ class Fluid(yaml.YAMLObject):
 
 class Water(Fluid):
     yaml_tag = u'!water'
+
     def __init__(self, **kwargs):
         super(Water, self).__init__(fluid_type='water', **kwargs)
         self.ph = round(random.uniform(6.5, 8.0), 2)
 
+class Chlorine(Fluid):
+    yaml_tag = u'!chlorine'
+
+    def __init__(self, **kwargs):
+        super(Chlorine, self).__init__(fluid_type='chlorine', **kwargs)
+        self.ph = 5
 

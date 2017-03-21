@@ -49,7 +49,7 @@ class Sensor(Device):
         return self.fluid
 
 class pHSensor(Sensor):
-    yaml_tag = u'!sensor:ph'
+    yaml_tag = u'!ph'
 
     def __init__(self, connected_to=None, **kwargs):
         self.ph = None
@@ -76,7 +76,7 @@ class pHSensor(Sensor):
         return self.ph
 
 class StateSensor(Sensor):
-    yaml_tag = u'!sensor:state'
+    yaml_tag = u'!state'
 
     states = {
         'on': True,
@@ -100,7 +100,7 @@ class StateSensor(Sensor):
         return self.state
 
 class VolumeSensor(Sensor):
-    yaml_tag = u'!sensor:volume'
+    yaml_tag = u'!volume'
 
     def __init__(self, connected_to=None, worker_frequency=1, **kwargs):
         self.volume = 0

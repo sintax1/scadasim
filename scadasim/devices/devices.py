@@ -18,7 +18,7 @@ class InvalidDevice(Exception):
 
 # Devices
 class Device(yaml.YAMLObject):
-    allowed_device_types = ['pump', 'valve', 'tank', 'reservoir', 'filter', 'chlorinator', 'sensor']
+    allowed_device_types = ['pump', 'valve', 'filter', 'tank', 'reservoir', 'sensor', 'chlorinator']
 
     def __init__(self, device_type=None, fluid=None, label='', state=None, worker_frequency=1):
         self.uid = str(uuid.uuid4())[:8]
@@ -198,6 +198,23 @@ class Valve(Device):
         else:
             return 0
 
+class Filter(Device):
+    yaml_tag = u'!filter'
+
+    def __init__(self, device_type='filter', **kwargs):
+        super(Filter, self).__init__(device_type=device_type, **kwargs)
+
+    def output(self, to_device, volume=1):
+        available_volume = 0
+        for i in self.inputs:
+            available_volume = self.inputs[i].output(self, volume=volume)
+        return available_volume
+
+    def input(self, fluid, volume=1):
+        accepted_volume = 0
+        for o in self.outputs:
+            accepted_volume = self.outputs[o].input(fluid, volume)
+        return accepted_volume
 
 class Tank(Device):
     yaml_tag = u'!tank'
@@ -247,11 +264,28 @@ class Tank(Device):
         """For debugging only. Used to display the tank's volume"""
         pass
 
-
 class Reservoir(Tank):
     yaml_tag = u'!reservoir'
 
     def __init__(self, **kwargs):
         super(Reservoir, self).__init__(device_type='reservoir', **kwargs)
 
+class Chlorinator(Tank):
+    yaml_tag = u'!chlorinator'
+
+    def __init__(self, device_type='chlorinator', **kwargs):
+        super(Chlorinator, self).__init__(device_type=device_type, **kwargs)
+
+    def output(self, to_device, volume=1):
+        available_volume = 0
+        for i in self.inputs:
+            available_volume = self.inputs[i].output(self, volume=volume)
+        return available_volume
+
+    def input(self, fluid, volume=1):
+        self.fluid = fluid
+        accepted_volume = 0
+        for o in self.outputs:
+            accepted_volume = self.outputs[o].input(fluid, volume)
+        return accepted_volume
 

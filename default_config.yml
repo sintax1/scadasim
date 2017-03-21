@@ -12,11 +12,34 @@ devices:
   - !pump
     label: pump1
     state: 'on'
+  - !filter
+    label: filter1
   - !valve
     label: valve2
     state: 'open'
+  - !pump
+    label: pump2
+    state: 'on'
   - !tank
-    label: tank1
+    label: chlorinetank
+    volume: 100
+    fluid: !chlorine {}
+  - !valve
+    label: chlorinevalve
+    state: 'closed'
+  - !pump
+    label: chlorinepump
+    state: 'on'
+  - !tank
+    label: chlorinator
+  - !pump
+    label: pump3
+    state: 'on'
+  - !valve
+    label: valve3
+    state: 'open'
+  - !tank
+    label: municipaltank
 
 connections:
   reservoir1:
@@ -27,24 +50,66 @@ connections:
      - pump1
   pump1:
     outputs:
+     - filter1
+  filter1:
+    outputs:
      - valve2
   valve2:
     outputs:
-     - tank1
+     - pump2
+  pump2:
+    outputs:
+     - chlorinator
+  chlorinetank:
+    outputs:
+     - chlorinevalve
+  chlorinevalve:
+    outputs:
+     - chlorinepump
+  chlorinepump:
+    outputs:
+     - chlorinator
+  chlorinator:
+    outputs:
+     - valve3
+  valve3:
+    outputs:
+     - pump3
+  pump3:
+    outputs:
+     - municipaltank
 
 sensors:
-  - !sensor:volume
-    label: sensor1
+  - !volume
+    label: reservoirsensor
     connected_to: reservoir1
-  - !sensor:volume
-    label: sensor2
-    connected_to: tank1
-  - !sensor:state
-    label: sensor3
+  - !volume
+    label: chlorinetanksensor
+    connected_to: chlorinetank
+  - !volume
+    label: chlorinatorsensor
+    connected_to: chlorinator
+  - !volume
+    label: municipaltanksensor
+    connected_to: municipaltank
+  - !state
+    label: valve1sensor
     connected_to: valve1
-  - !sensor:state
-    label: sensor4
+  - !state
+    label: valve2sensor
     connected_to: valve2
-  - !sensor:state
-    label: sensor5
+  - !state
+    label: valve3sensor
+    connected_to: valve3
+  - !state
+    label: pump1sensor
     connected_to: pump1
+  - !state
+    label: pump2sensor
+    connected_to: pump2
+  - !state
+    label: pump3sensor
+    connected_to: pump3
+  - !state
+    label: chlorinepumpsensor
+    connected_to: chlorinepump
