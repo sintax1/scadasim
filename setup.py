@@ -7,6 +7,6 @@ setup(name='scadasim',
       author='sintax1',
       author_email='sintax@obscurepacket.org',
       license='MIT',
-      packages=['scadasim'],
+      packages=['scadasim', 'scadasim.devices', 'scadasim.fluids', 'scadasim.devices', 'scadasim.sensors', 'scadasim.utils', 'tests'],
       zip_safe=False)
 
