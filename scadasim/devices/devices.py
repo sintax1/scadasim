@@ -122,10 +122,8 @@ class Pump(Device):
     def worker(self):
         """Manipulate the fluid just as this device would in the real world
         """
-        #log.debug("%s worker" % self)
         if self.state == 'off':
             # Pump is off, do nothing
-            #log.debug("%s Pump is off" % self)
             pass
 
         elif self.state == 'on':

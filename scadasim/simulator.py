@@ -8,7 +8,6 @@ log = logging.getLogger()
 log.setLevel(logging.INFO)
 
 class Simulator(object):
-	devices = None
 
 	def load_yml(self, path_to_yaml_config):
 		"""Read and parse YAML configuration file into simulator devices
