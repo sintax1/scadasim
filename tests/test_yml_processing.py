@@ -3,7 +3,10 @@ from scadasim.utils import parse_yml, build_simulation
 def test_yml_processing():
 
     config = parse_yml('tests/test_water_plant.yml')
-    settings, devices = build_simulation(config)
+    simulation = build_simulation(config)
+    settings = simulation['settings']
+    devices = simulation['devices']
+    sensors = simulation['sensors']
 
     print settings
     print devices

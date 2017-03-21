@@ -20,7 +20,7 @@ class InvalidDevice(Exception):
 class Device(yaml.YAMLObject):
     allowed_device_types = ['pump', 'valve', 'tank', 'reservoir', 'filter', 'chlorinator', 'sensor']
 
-    def __init__(self, device_type=None, fluid=None, label='', worker_frequency=1):
+    def __init__(self, device_type=None, fluid=None, label='', state=None, worker_frequency=1):
         self.uid = str(uuid.uuid4())[:8]
         self.device_type = device_type
         self.label = label
@@ -31,6 +31,7 @@ class Device(yaml.YAMLObject):
         # Time interval in seconds. set to None if the device doesnt need a worker loop
         self.worker_frequency = worker_frequency
         self.speed = 1
+        self.state = state
 
         if (not self.device_type) or (self.device_type not in self.allowed_device_types):
             raise InvalidDevice("\'%s\' in not a valid device type" % self.device_type)
@@ -86,6 +87,9 @@ class Device(yaml.YAMLObject):
             self.active = False
         log.info("%s: Inactive" % self)
 
+    def read_state(self):
+        return self.state
+
     def worker(self):
         """Do something each cycle of `worker_frequency`
             Update fluid, pull inputs, push outputs, etc.
@@ -112,9 +116,8 @@ class Device(yaml.YAMLObject):
 class Pump(Device):
     yaml_tag = u'!pump'
 
-    def __init__(self, state='off', device_type='pump', **kwargs):
-    	self.state = state
-        super(Pump, self).__init__(device_type=device_type, **kwargs)
+    def __init__(self, device_type='pump', state='off', **kwargs):
+        super(Pump, self).__init__(device_type=device_type, state=state, **kwargs)
 
     def worker(self):
         """Manipulate the fluid just as this device would in the real world
@@ -158,9 +161,8 @@ class Pump(Device):
 class Valve(Device):
     yaml_tag = u'!valve'
 
-    def __init__(self, state='closed', device_type='valve', **kwargs):
-    	self.state = state
-        super(Valve, self).__init__(device_type=device_type, worker_frequency=None, **kwargs)
+    def __init__(self, device_type='valve', state='closed', **kwargs):
+        super(Valve, self).__init__(device_type=device_type, state=state, **kwargs)
 
     def open(self):
         self.state = 'open'

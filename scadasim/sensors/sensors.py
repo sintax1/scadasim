@@ -35,18 +35,26 @@ class Sensor(Device):
     def worker(self):
         """Do something at `worker_frequency` rate
         """
-        log.debug("%s fluid: %s" % (self, self.fluid))
         pass
+
+    def monitor_device(self, device):
+        """Attach to a device
+        """
+        self.device_to_monitor = device
 
     def read_sensor(self):
         """ Report sensor value
+             Override this to customize the data reported
         """
         return self.fluid
 
 class pHSensor(Sensor):
-    def __init__(self, **kwargs):
+    yaml_tag = u'!sensor:ph'
+
+    def __init__(self, connected_to=None, **kwargs):
         self.ph = None
-        super(Sensor, self).__init__(device_type="sensor", worker_frequency=1, **kwargs)
+        self.device_to_monitor = connected_to
+        super(Sensor, self).__init__(device_type="sensor", **kwargs)
 
     def input(self, fluid, volume):
         """When fluid comes in, store the fluid context, and pass it downstream to all connected devices
@@ -66,3 +74,45 @@ class pHSensor(Sensor):
         """ Report sensor value
         """
         return self.ph
+
+class StateSensor(Sensor):
+    yaml_tag = u'!sensor:state'
+
+    states = {
+        'on': True,
+        'open': True,
+        'off': False,
+        'closed': False
+    }
+
+    def __init__(self, connected_to=None, **kwargs):
+        self.device_to_monitor = connected_to
+        super(Sensor, self).__init__(device_type="sensor", **kwargs)
+
+    def worker(self):
+        """Get the state of `device_to_monitor`
+        """
+        self.state = self.states[self.device_to_monitor.read_state()]
+
+    def read_sensor(self):
+        """ Report sensor value
+        """
+        return self.state
+
+class VolumeSensor(Sensor):
+    yaml_tag = u'!sensor:volume'
+
+    def __init__(self, connected_to=None, worker_frequency=1, **kwargs):
+        self.volume = 0
+        self.device_to_monitor = connected_to
+        super(Sensor, self).__init__(device_type="sensor", **kwargs)
+
+    def worker(self):
+        """Get the state of `device_to_monitor`
+        """
+        self.volume = self.device_to_monitor.volume
+
+    def read_sensor(self):
+        """ Report sensor value
+        """
+        return self.volume

@@ -15,7 +15,10 @@ class Simulator(object):
 		"""
 		self.path_to_yaml_config = path_to_yaml_config
 		self.config = parse_yml(path_to_yaml_config)
-		self.settings, self.devices = build_simulation(self.config)
+		simulation = build_simulation(self.config)
+		self.settings = simulation['settings']
+		self.devices = simulation['devices']
+		self.sensors = simulation['sensors']
 
 		self.set_speed(self.settings['speed'])
 
@@ -24,15 +27,20 @@ class Simulator(object):
 		for device in self.devices.values():
 			device.activate()
 
+		for sensor in self.sensors.values():
+			sensor.activate()
+
 	def pause(self):
 		"""Pause the simulation"""
 		for device in self.devices.values():
 			device.deactivate()
 
+		for sensor in self.sensors.values():
+			sensor.deactivate()
+
 	def stop(self):
 		"""Stop and destroy the simulation"""
-		for device in self.devices.values():
-			device.deactivate()
+		self.pause()
 		sys.exit(0)
 
 	def set_speed(self, speed):
@@ -41,6 +49,9 @@ class Simulator(object):
 		"""
 		for device in self.devices.values():
 			device.speed = speed
+
+		for sensor in self.sensors.values():
+			sensor.speed = speed
 
 	def restart(self):
 		"""Stop and reload the simulation from the original config"""

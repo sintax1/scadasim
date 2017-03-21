@@ -11,8 +11,10 @@ def parse_yml(path_to_yml_file):
     return config
 
 def build_simulation(config):
+    print config
     settings = config['settings']
     devices = {}
+    sensors = {}
 
     # Process devices
     for device in config['devices']:
@@ -27,4 +29,11 @@ def build_simulation(config):
             for dev_input in connections['inputs']:
                 devices[device_label].add_input(devices[dev_input])
 
-    return settings, devices
+    # process sensors
+    for sensor in config['sensors']:
+        print sensor.device_to_monitor
+        device_to_monitor = devices[sensor.device_to_monitor]
+        sensor.monitor_device(device_to_monitor)
+        sensors[sensor.label] = sensor
+
+    return {'settings': settings, 'devices': devices, 'sensors': sensors}
