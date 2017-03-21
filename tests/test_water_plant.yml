@@ -33,18 +33,18 @@ connections:
      - tank1
 
 sensors:
-  - !sensor:volume
+  - !volume
     label: sensor1
     connected_to: reservoir1
-  - !sensor:volume
+  - !volume
     label: sensor2
-    connected_to: tank2
-  - !sensor:state
+    connected_to: tank1
+  - !state
     label: sensor3
     connected_to: valve1
-  - !sensor:state
+  - !state
     label: sensor4
     connected_to: valve2
-  - !sensor:state
+  - !state
     label: sensor5
     connected_to: pump1
