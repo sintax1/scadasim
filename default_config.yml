@@ -96,6 +96,9 @@ sensors:
     label: valve1sensor
     connected_to: valve1
   - !state
+    label: chlorinevalvesensor
+    connected_to: chlorinevalve
+  - !state
     label: valve2sensor
     connected_to: valve2
   - !state
