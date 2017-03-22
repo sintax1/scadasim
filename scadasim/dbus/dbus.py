@@ -16,7 +16,7 @@ class DBUSService(threading.Thread):
 		dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 		self.loop = gobject.MainLoop()
 		self.dbusmonitor = DBUSMonitor()
-    	loop.run()
+    		self.loop.run()
 
 	def stop(self):
 		self.loop.quit()
@@ -30,7 +30,7 @@ class DBUSMonitor(dbus.service.Object):
         self.path = path
         self.bus = dbus.SystemBus()
         self.busname = dbus.service.BusName(self.iface, self.bus)
-        super(DBUSService, self).__init__(self.busname, self.path, **kwargs)
+        super(DBUSMonitor, self).__init__(self.busname, self.path, **kwargs)
 
 
     def add_signal_handler(self, signal, handler):
