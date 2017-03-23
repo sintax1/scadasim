@@ -99,7 +99,7 @@ class DBusWorker(dbus.service.Object):
 
         dbus-send --system --print-reply --dest=com.root9b.scadasim / com.root9b.scadasim.registerPLC string:"hello"
         """
-        self.plcs[plc].registered = True
+        self.plcs[plc]['registered'] = True
         log.debug("%s sensors:" % plc)
         log.debug("%s" % self.plcs[plc]['sensors'])
         return self.plcs[plc]['sensors']
@@ -110,7 +110,10 @@ class DBusWorker(dbus.service.Object):
 
     @dbus.service.method("com.root9b.scadasim", in_signature='', out_signature='a{sv}')
     def dictTest(self, plc):
-        return self.plcs[plc]['sensors']
+        sensors = self.plcs[plc]['sensors']
+        for sensor in sensors:
+            sensors[sensor].pop('read_sensor', None)
+        return sensors
 
 
 if __name__ == '__main__':
