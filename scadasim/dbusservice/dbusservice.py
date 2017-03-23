@@ -91,7 +91,7 @@ class DBusWorker(dbus.service.Object):
     """
 
     #https://dbus.freedesktop.org/doc/dbus-python/doc/tutorial.html#basic-type-conversions
-    @dbus.service.method("com.root9b.scadasim", in_signature='s', out_signature='a{sq}')
+    @dbus.service.method("com.root9b.scadasim", in_signature='s', out_signature='a{sv}')
     def registerPLC(self, plc):
         """
             return sensor name and sensor address in PLC.
@@ -100,16 +100,13 @@ class DBusWorker(dbus.service.Object):
         dbus-send --system --print-reply --dest=com.root9b.scadasim / com.root9b.scadasim.registerPLC string:"hello"
         """
         self.plcs[plc]['registered'] = True
-        log.debug("%s sensors:" % plc)
-        log.debug("%s" % self.plcs[plc]['sensors'])
-        return self.plcs[plc]['sensors']
-
-    @dbus.service.method("com.root9b.scadasim", in_signature='s', out_signature='a{sq}')
-    def readSensors(self, plc):
-        return self.plcs[plc]['sensors']
+        sensors = self.plcs[plc]['sensors']
+        for sensor in sensors:
+            sensors[sensor].pop('read_sensor', None)
+        return sensors
 
     @dbus.service.method("com.root9b.scadasim", in_signature='', out_signature='a{sv}')
-    def dictTest(self, plc):
+    def readSensors(self, plc):
         sensors = self.plcs[plc]['sensors']
         for sensor in sensors:
             sensors[sensor].pop('read_sensor', None)
