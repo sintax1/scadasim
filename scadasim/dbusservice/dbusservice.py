@@ -30,9 +30,9 @@ class DBusService(threading.Thread):
         self._read_sensors()
 
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        db = DBusWorker(self.plcs)
+        self.db = DBusWorker(self.plcs)
         log.debug('Starting dbus main thread')
-        db.loop.run()
+        self.db.loop.run()
 
     def set_speed(self, speed):
         self.speed = speed
@@ -64,6 +64,7 @@ class DBusService(threading.Thread):
 
     def deactivate(self):
         self._stop.set()
+        self.db.loop.quit()
 
  
 class DBusWorker(dbus.service.Object):
