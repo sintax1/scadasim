@@ -58,14 +58,12 @@ class DBusService(threading.Thread):
         t.start()
 
     def activate(self):
-        if self._stop.is_set():
-            self._stop.clear()
-            self.start()
+        self._stop.clear()
+        self.start()
 
     def deactivate(self):
         self._stop.set()
         self.db.loop.quit()
-
 
  
 class DBusWorker(dbus.service.Object):
