@@ -33,20 +33,28 @@ class DBusWorker(dbus.service.Object):
     Each coil or contact is 1 bit and assigned a data address between 0000 and 270E.
     Each register is 1 word = 16 bits = 2 bytes
 
+    dbus-send --system --type=method_call --print-reply --dest=com.root9b.scadasim / org.freedesktop.DBus.Introspectable.Introspect
+
     """
 
     #https://dbus.freedesktop.org/doc/dbus-python/doc/tutorial.html#basic-type-conversions
-    @dbus.service.method("com.root9b.scadasim", in_signature='s', out_signature='as')
+    @dbus.service.method("com.root9b.scadasim", in_signature='s', out_signature='a{sq}')
     def registerPLC(self, hostname):
         """
             return sensor name and sensor address in PLC.
-                TODO: add slave id
+            TODO: add slave id
+
+        dbus-send --system --print-reply --dest=com.root9b.scadasim / com.root9b.scadasim.registerPLC string:"hello"
         """
         return {'Sensor1': 0x1001, 'Sensor2': 0x2001}
 
-    @dbus.service.method("com.root9b.scadasim", in_signature='', out_signature='')
+    @dbus.service.method("com.root9b.scadasim", in_signature='s', out_signature='a{sq}')
     def readSensors(self, hostname):
         return {'Sensor1': 0x00, 'Sensor2': 0xff}
+
+    @dbus.service.method("com.root9b.scadasim", in_signature='', out_signature='a{sv}')
+    def dictTest(self, hostname):
+        return {'Sensor1': 'test', 'Sensor2': 0xff, 'Sensor3': {'test': 'ok'}}
 
 
 if __name__ == '__main__':
