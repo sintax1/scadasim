@@ -39,19 +39,18 @@ class DBusService(threading.Thread):
         self.plcs = plcs
 
     def _read_sensors(self):
-        log.debug("%s %s" % (self, datetime.now()))
-        self.worker()
-
-        # Calculate the next run time based on simulation speed and device frequency
-        delay = (-time.time()%(self.speed*self.read_frequency))
-        t = threading.Timer(delay, self._read_sensors)
-        t.daemon = True
-        t.start()
+        log.debug("%s Reading Sensors %s" % (self, datetime.now()))
 
         for plc in self.plcs:
             for sensor in self.plcs[plc]['sensors']:
                 read_sensor = self.plcs[plc]['sensors'][sensor]['read_sensor']
                 self.plcs[plc]['sensors'][sensor]['value'] = read_sensor()
+
+        # Calculate the next run time based on simulation speed and read frequency
+        delay = (-time.time()%(self.speed*self.read_frequency))
+        t = threading.Timer(delay, self._read_sensors)
+        t.daemon = True
+        t.start()
 
  
 class DBusWorker(dbus.service.Object):
