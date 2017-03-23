@@ -100,6 +100,38 @@ connections:
   valve2:
     outputs:
      - tank1
+
+
+  /*
+    slaveid
+
+        Each slave in a network is assigned a unique unit address from 1 to 247. When the master requests data, 
+        the first byte it sends is the Slave address. This way each slave knows after the first byte 
+        whether or not to ignore the message.
+
+    data_offset & data_address
+
+      Coil/Register Numbers   Data Addresses  Type        Table Name                          Use
+      1-9999                  0000 to 270E    Read-Write  Discrete Output Coils               on/off read/write
+      10001-19999             0000 to 270E    Read-Only   Discrete Input Contacts             on/off readonly
+      30001-39999             0000 to 270E    Read-Only   Analog Input Registers              analog readonly
+      40001-49999             0000 to 270E    Read-Write  Analog Output Holding Registers     analog read/write
+
+  */
+
+plcs:
+  plc1:
+    slaveid: 1                  # valid range: 1-247
+    sensors:
+      reservoirsensor:
+          data_offset: 2001       # Valid values: 1, 1001, 2001, or 3001
+          data_address: 0x0000    # Valid values: 0x0000 - 0x270e
+      pump1sensor:
+          data_offset: 1
+          data_address: 0x0000
+      valve1sensor:
+          data_offset: 1
+          data_address: 0x0001
 ```
 
 ## Running a simulation within your own python script
