@@ -50,7 +50,8 @@ class DBusService(threading.Thread):
 
         for plc in self.plcs:
             for sensor in self.plcs[plc]['sensors']:
-                self.plcs[plc]['sensors'][sensor].value = self.plcs[plc]['sensors'][sensor].read_sensor()
+                read_sensor = self.plcs[plc]['sensors'][sensor]['read_sensor']
+                self.plcs[plc]['sensors'][sensor]['value'] = read_sensor()
 
  
 class DBusWorker(dbus.service.Object):
