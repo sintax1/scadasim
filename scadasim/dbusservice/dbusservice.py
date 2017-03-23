@@ -42,7 +42,7 @@ class DBusService(threading.Thread):
 
     def _read_sensors(self):
 
-        if self._stop: return
+        if self._stop.is_set(): return
 
         log.debug("%s Reading Sensors %s" % (self, datetime.now()))
 
@@ -58,13 +58,14 @@ class DBusService(threading.Thread):
         t.start()
 
     def activate(self):
-        if self._stop:
+        if self._stop.is_set():
             self._stop.clear()
             self.start()
 
     def deactivate(self):
         self._stop.set()
         self.db.loop.quit()
+
 
  
 class DBusWorker(dbus.service.Object):
