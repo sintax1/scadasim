@@ -14,6 +14,7 @@ def build_simulation(config):
     settings = config['settings']
     devices = {}
     sensors = {}
+    plcs = {}
 
     # Process devices
     for device in config['devices']:
@@ -34,4 +35,14 @@ def build_simulation(config):
         sensor.monitor_device(device_to_monitor)
         sensors[sensor.label] = sensor
 
-    return {'settings': settings, 'devices': devices, 'sensors': sensors}
+    # process PLCs
+    plcs = config['plcs']
+    for plc in plcs:
+        # Add registered state so we can tell if the PLC has communicated with the sensors
+        plcs[plc].registered = False
+        # Add all sensor.read_sensor connections to each plc
+        for sensor in plcs[plc]['sensors']:
+            plcs[plc]['sensors'][sensor].value = 0
+            plcs[plc]['sensors'][sensor].read_sensor = sensors[sensor].read_sensor
+
+    return {'settings': settings, 'devices': devices, 'sensors': sensors, 'plcs': plcs}

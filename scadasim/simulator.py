@@ -5,9 +5,15 @@ import logging
 
 logging.basicConfig()
 log = logging.getLogger()
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 class Simulator(object):
+
+	def __init__(self, dbus=False):
+		self.dbus = dbus
+		if self.dbus:
+			from dbusservice import DBusService
+        	self.dbusservice = DBusService()
 
 	def load_yml(self, path_to_yaml_config):
 		"""Read and parse YAML configuration file into simulator devices
@@ -18,6 +24,7 @@ class Simulator(object):
 		self.settings = simulation['settings']
 		self.devices = simulation['devices']
 		self.sensors = simulation['sensors']
+		self.plcs = simulation['plcs']
 
 		self.set_speed(self.settings['speed'])
 
@@ -28,6 +35,11 @@ class Simulator(object):
 
 		for sensor in self.sensors.values():
 			sensor.activate()
+
+		if self.dbus:
+        	self.dbusservice.load_plcs(self.plcs)
+        	self.dbusservice.set_speed(self.settings['speed'])
+        	self.dbusservice.start()
 
 	def pause(self):
 		"""Pause the simulation"""

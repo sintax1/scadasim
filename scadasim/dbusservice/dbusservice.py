@@ -5,30 +5,70 @@ import dbus.service
 import dbus.mainloop.glib
 from gi.repository import GObject as gobject
 import threading
+import time
+from datetime import datetime
+
+import logging
+
+logging.basicConfig()
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
 
 class DBusService(threading.Thread):
 
+    def __init__(self):
+        super(DBusService, self).__init__()
+        self.sensors = None
+        self.plcs = None
+        self.read_frequency = 1
+        self.speed = 1
+
     def run(self):
+        log.debug('Starting read sensors worker thread')
+        self._read_sensors()
+
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        db = DBusWorker()
-        db.loop.run()
+        db = DBusWorker(self.plcs)
+        #log.debug('Starting dbus main thread')
+        #db.loop.run()
+
+    def set_speed(self, speed):
+        self.speed = speed
+
+    def load_plcs(self, plcs):
+        self.plcs = plcs
+
+    def _read_sensors(self):
+        log.debug("%s %s" % (self, datetime.now()))
+        self.worker()
+
+        # Calculate the next run time based on simulation speed and device frequency
+        delay = (-time.time()%(self.speed*self.read_frequency))
+        t = threading.Timer(delay, self._read_sensors)
+        t.daemon = True
+        t.start()
+
+        for plc in self.plcs:
+            for sensor in self.plcs[plc]['sensors']:
+                self.plcs[plc]['sensors'][sensor].value = self.plcs[plc]['sensors'][sensor].read_sensor()
 
  
 class DBusWorker(dbus.service.Object):
 
-    def __init__(self):
+    def __init__(self, plcs):
         self.session_bus = dbus.SystemBus()
         self.name = dbus.service.BusName("com.root9b.scadasim", bus=self.session_bus)
         self.loop = gobject.MainLoop()
-
+        self.plcs = plcs
+        
         dbus.service.Object.__init__(self, self.name, '/')
 
     """
-    Coil/Register Numbers   Data Addresses  Type        Table Name
-    1-9999                  0000 to 270E    Read-Write  Discrete Output Coils
-    10001-19999             0000 to 270E    Read-Only   Discrete Input Contacts
-    30001-39999             0000 to 270E    Read-Only   Analog Input Registers
-    40001-49999             0000 to 270E    Read-Write  Analog Output Holding Registers
+    Coil/Register Numbers   Data Addresses  Type        Table Name                          Use
+    1-9999                  0000 to 270E    Read-Write  Discrete Output Coils               on/off read/write
+    10001-19999             0000 to 270E    Read-Only   Discrete Input Contacts             on/off readonly
+    30001-39999             0000 to 270E    Read-Only   Analog Input Registers              analog readonly
+    40001-49999             0000 to 270E    Read-Write  Analog Output Holding Registers     analog read/write
 
     Each coil or contact is 1 bit and assigned a data address between 0000 and 270E.
     Each register is 1 word = 16 bits = 2 bytes
@@ -39,22 +79,25 @@ class DBusWorker(dbus.service.Object):
 
     #https://dbus.freedesktop.org/doc/dbus-python/doc/tutorial.html#basic-type-conversions
     @dbus.service.method("com.root9b.scadasim", in_signature='s', out_signature='a{sq}')
-    def registerPLC(self, hostname):
+    def registerPLC(self, plc):
         """
             return sensor name and sensor address in PLC.
             TODO: add slave id
 
         dbus-send --system --print-reply --dest=com.root9b.scadasim / com.root9b.scadasim.registerPLC string:"hello"
         """
-        return {'Sensor1': 0x1001, 'Sensor2': 0x2001}
+        self.plcs[plc].registered = True
+        log.debug("%s sensors:" % plc
+        log.debug(self.plcs[plc]['sensors'])
+        return self.plcs[plc]['sensors']
 
     @dbus.service.method("com.root9b.scadasim", in_signature='s', out_signature='a{sq}')
-    def readSensors(self, hostname):
-        return {'Sensor1': 0x00, 'Sensor2': 0xff}
+    def readSensors(self, plc):
+        return self.plcs[plc]['sensors']
 
     @dbus.service.method("com.root9b.scadasim", in_signature='', out_signature='a{sv}')
-    def dictTest(self, hostname):
-        return {'Sensor1': 'test', 'Sensor2': 0xff, 'Sensor3': {'test': 'ok'}}
+    def dictTest(self, plc):
+        return self.plcs[plc]['sensors']
 
 
 if __name__ == '__main__':

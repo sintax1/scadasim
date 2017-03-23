@@ -9,13 +9,8 @@ if __name__ == '__main__':
 	parser.add_argument('-d', '--dbus', help='Connect to dbus to communicate with scadasim PLCs', action='store_true')
 	args = parser.parse_args()
 
-	sim = Simulator()
+	sim = Simulator(args.dbus)
 	sim.load_yml(args.config)
-
-    if args.dbus:
-        from dbusservice import DBusService
-        d = DBusService()
-        d.start()
 
 	sim.start()
 
