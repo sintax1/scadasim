@@ -22,7 +22,7 @@ class DBusService(threading.Thread):
         self._stop = threading.Event()
         self.sensors = None
         self.plcs = None
-        self.read_frequency = 1
+        self.read_frequency = 0.5
         self.speed = 1
         self.active = True
 
