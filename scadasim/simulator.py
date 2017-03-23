@@ -37,6 +37,7 @@ class Simulator(object):
             sensor.activate()
 
         log.debug(self.sensors)
+        log.debug(self.plcs)
 
         if self.dbus:
             for plc in self.plcs:
