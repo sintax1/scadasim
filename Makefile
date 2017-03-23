@@ -5,6 +5,6 @@ test:
 	py.test tests
 
 run:
-	python -i run.py -c default_config.yml
+	python -i run.py -c default_config.yml -d
 
 .PHONY: init test run
