@@ -88,8 +88,8 @@ class DBusWorker(dbus.service.Object):
         dbus-send --system --print-reply --dest=com.root9b.scadasim / com.root9b.scadasim.registerPLC string:"hello"
         """
         self.plcs[plc].registered = True
-        log.debug("%s sensors:" % plc
-        log.debug(self.plcs[plc]['sensors'])
+        log.debug("%s sensors:" % plc)
+        log.debug("%s" % self.plcs[plc]['sensors'])
         return self.plcs[plc]['sensors']
 
     @dbus.service.method("com.root9b.scadasim", in_signature='s', out_signature='a{sq}')
