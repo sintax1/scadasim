@@ -31,8 +31,8 @@ class DBusService(threading.Thread):
 
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         db = DBusWorker(self.plcs)
-        #log.debug('Starting dbus main thread')
-        #db.loop.run()
+        log.debug('Starting dbus main thread')
+        db.loop.run()
 
     def set_speed(self, speed):
         self.speed = speed
