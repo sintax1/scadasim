@@ -18,10 +18,12 @@ class DBusService(threading.Thread):
 
     def __init__(self):
         super(DBusService, self).__init__()
+        self._stop = threading.Event()
         self.sensors = None
         self.plcs = None
         self.read_frequency = 1
         self.speed = 1
+        self.active = True
 
     def run(self):
         log.debug('Starting read sensors worker thread')
@@ -39,6 +41,9 @@ class DBusService(threading.Thread):
         self.plcs = plcs
 
     def _read_sensors(self):
+
+        if self._stop: return
+
         log.debug("%s Reading Sensors %s" % (self, datetime.now()))
 
         for plc in self.plcs:
@@ -51,6 +56,14 @@ class DBusService(threading.Thread):
         t = threading.Timer(delay, self._read_sensors)
         t.daemon = True
         t.start()
+
+    def activate(self):
+        if self._stop:
+            self._stop.clear()
+            self.start()
+
+    def deactivate(self):
+        self._stop.set()
 
  
 class DBusWorker(dbus.service.Object):

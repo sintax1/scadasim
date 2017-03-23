@@ -39,7 +39,7 @@ class Simulator(object):
         if self.dbus:
             self.dbusservice.load_plcs(self.plcs)
             self.dbusservice.set_speed(self.settings['speed'])
-            self.dbusservice.start()
+            self.dbusservice.activate()
 
     def pause(self):
         """Pause the simulation"""
@@ -48,6 +48,9 @@ class Simulator(object):
 
         for sensor in self.sensors.values():
             sensor.deactivate()
+
+        if self.dbus:
+            self.dbusservice.deactivate()
 
     def stop(self):
         """Stop and destroy the simulation"""
@@ -63,6 +66,9 @@ class Simulator(object):
 
         for sensor in self.sensors.values():
             sensor.speed = speed
+
+        if self.dbus:
+        	self.dbusservice.set_speed(speed)
 
     def restart(self):
         """Stop and reload the simulation from the original config"""
