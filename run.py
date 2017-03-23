@@ -14,5 +14,3 @@ if __name__ == '__main__':
 	sim.load_yml(args.config)
 
 	sim.start()
-
-
