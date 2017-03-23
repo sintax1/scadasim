@@ -49,7 +49,6 @@ class DBusService(threading.Thread):
 
         for plc in self.plcs:
             for sensor in self.plcs[plc]['sensors']:
-                log.debug(self.plcs[plc]['sensors'][sensor])
                 read_sensor = self.plcs[plc]['sensors'][sensor]['read_sensor']
                 self.plcs[plc]['sensors'][sensor]['value'] = read_sensor()
 
