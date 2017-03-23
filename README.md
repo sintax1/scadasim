@@ -109,13 +109,18 @@ connections:
         the first byte it sends is the Slave address. This way each slave knows after the first byte 
         whether or not to ignore the message.
 
-    data_offset & data_address
+    register_type & data_address
 
-      Coil/Register Numbers   Data Addresses  Type        Table Name                          Use
-      1-9999                  0000 to 270E    Read-Write  Discrete Output Coils               on/off read/write
-      10001-19999             0000 to 270E    Read-Only   Discrete Input Contacts             on/off readonly
-      30001-39999             0000 to 270E    Read-Only   Analog Input Registers              analog readonly
-      40001-49999             0000 to 270E    Read-Write  Analog Output Holding Registers     analog read/write
+    ‘d’ - Discrete Inputs initializer ‘c’ - Coils initializer ‘h’ - Holding Register initializer ‘i’ - Input Registers iniatializer
+
+    Coil/Register Numbers   Data Addresses  Type        Table Name                          Use
+    1-9999                  0000 to 270E    Read-Write  Discrete Output Coils               on/off read/write   c
+    10001-19999             0000 to 270E    Read-Only   Discrete Input Contacts             on/off readonly     d
+    30001-39999             0000 to 270E    Read-Only   Analog Input Registers              analog readonly     i
+    40001-49999             0000 to 270E    Read-Write  Analog Output Holding Registers     analog read/write   h
+
+    Each coil or contact is 1 bit and assigned a data address between 0000 and 270E.
+    Each register is 1 word = 16 bits = 2 bytes
 
   */
 
@@ -124,14 +129,15 @@ plcs:
     slaveid: 1                  # valid range: 1-247
     sensors:
       reservoirsensor:
-          data_offset: 2001       # Valid values: 1, 1001, 2001, or 3001
+          register_type: i       # Valid values: (d)iscretes,(i)inputs,(h)oliding,(c)oils
           data_address: 0x0000    # Valid values: 0x0000 - 0x270e
       pump1sensor:
-          data_offset: 1
+          register_type: d
           data_address: 0x0000
       valve1sensor:
-          data_offset: 1
+          register_type: d
           data_address: 0x0001
+
 ```
 
 ## Running a simulation within your own python script
