@@ -7,6 +7,7 @@ from gi.repository import GObject as gobject
 import threading
 import time
 from datetime import datetime
+import copy
 
 import logging
 
@@ -101,14 +102,14 @@ class DBusWorker(dbus.service.Object):
         dbus-send --system --print-reply --dest=com.root9b.scadasim / com.root9b.scadasim.registerPLC string:"hello"
         """
         self.plcs[plc]['registered'] = True
-        sensors = dict(self.plcs[plc]['sensors'])
+        sensors = copy.deepcopy(self.plcs[plc]['sensors'])
         for sensor in sensors:
             sensors[sensor].pop('read_sensor', None)
         return sensors
 
     @dbus.service.method("com.root9b.scadasim", in_signature='', out_signature='a{sv}')
     def readSensors(self, plc):
-        sensors = dict(self.plcs[plc]['sensors'])
+        sensors = copy.deepcopy(self.plcs[plc]['sensors'])
         for sensor in sensors:
             sensors[sensor].pop('read_sensor', None)
         return sensors
