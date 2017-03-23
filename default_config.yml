@@ -122,47 +122,47 @@ plcs:
     slaveid: 1                  # valid range: 1-247
     sensors:
       reservoirsensor:
-          data_offset: 2001       # Valid values: 1, 1001, 2001, or 3001
+          register_type: i       # Valid values: (d)iscretes,(i)inputs,(h)oliding,(c)oils
           data_address: 0x0000    # Valid values: 0x0000 - 0x270e
       pump1sensor:
-          data_offset: 1
+          register_type: d
           data_address: 0x0000
       valve1sensor:
-          data_offset: 1
+          register_type: d
           data_address: 0x0001
   chlorinatorplc:
     slaveid: 2
     sensors:
       chlorinetanksensor:
-          data_offset: 2001
+          register_type: i
           data_address: 0x0000
       chlorinevalvesensor:
-          data_offset: 1
+          register_type: d
           data_address: 0x0000
       chlorinepumpsensor:
-          data_offset: 1
+          register_type: d
           data_address: 0x0001
       chlorinatorsensor:
-          data_offset: 2001
+          register_type: i
           data_address: 0x0001
   plc2:
     slaveid: 3
     sensors:
       valve2sensor:
-          data_offset: 1
+          register_type: d
           data_address: 0x0000
       pump2sensor:
-          data_offset: 1
+          register_type: d
           data_address: 0x0001
   plc3:
     slaveid: 4
     sensors:
       valve3sensor:
-          data_offset: 1
+          register_type: d
           data_address: 0x0000
       pump3sensor:
-          data_offset: 1
+          register_type: d
           data_address: 0x0001
       municipaltanksensor:
-          data_offset: 2001
+          register_type: i
           data_address: 0x0000
