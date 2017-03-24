@@ -1,3 +1,3 @@
 PyYAML==3.12
 pytest==3.0.7
--e git+https://github.com/sintax1/dbusservice@84fdd4e0c1ef384a08f49b353a3ed0b6a007f58f#egg=dbusservice
+-e git+https://github.com/sintax1/dbusservice#egg=dbusservice

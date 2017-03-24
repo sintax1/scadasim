@@ -125,10 +125,10 @@ plcs:
           register_type: i       # Valid values: (d)iscretes,(i)inputs,(h)oliding,(c)oils
           data_address: 0x0000    # Valid values: 0x0000 - 0x270e
       pump1sensor:
-          register_type: d
+          register_type: c
           data_address: 0x0000
       valve1sensor:
-          register_type: d
+          register_type: c
           data_address: 0x0001
   chlorinatorplc:
     slaveid: 2
@@ -137,10 +137,10 @@ plcs:
           register_type: i
           data_address: 0x0000
       chlorinevalvesensor:
-          register_type: d
+          register_type: c
           data_address: 0x0000
       chlorinepumpsensor:
-          register_type: d
+          register_type: c
           data_address: 0x0001
       chlorinatorsensor:
           register_type: i
@@ -149,19 +149,19 @@ plcs:
     slaveid: 3
     sensors:
       valve2sensor:
-          register_type: d
+          register_type: c
           data_address: 0x0000
       pump2sensor:
-          register_type: d
+          register_type: c
           data_address: 0x0001
   plc3:
     slaveid: 4
     sensors:
       valve3sensor:
-          register_type: d
+          register_type: c
           data_address: 0x0000
       pump3sensor:
-          register_type: d
+          register_type: c
           data_address: 0x0001
       municipaltanksensor:
           register_type: i
