@@ -217,4 +217,4 @@ mydevice = MyCustomDevice(fluid=water, myvariable=10)
 ## References
    http://www.simplymodbus.ca/faq.htm#Stored
    https://dbus.freedesktop.org/doc/dbus-python/doc/tutorial.html#basic-type-conversions
-   
+   http://home.isr.uc.pt/~lino/AIR/Arquivo/PLC_Tutor/registers.htm
