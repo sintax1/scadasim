@@ -46,6 +46,7 @@ class Simulator(object):
             for plc in self.plcs:
                 for sensor in self.plcs[plc]['sensors']:
                     self.plcs[plc]['sensors'][sensor]['read_sensor'] = self.sensors[sensor].read_sensor
+                    self.plcs[plc]['sensors'][sensor]['write_sensor'] = self.sensors[sensor].write_sensor
             self.dbusservice.load_plcs(self.plcs)
             self.dbusservice.set_speed(self.settings['speed'])
             self.dbusservice.activate()
