@@ -89,6 +89,13 @@ class Device(yaml.YAMLObject):
     def read_state(self):
         return self.state
 
+    def write_state(self, state=None):
+        """ Set the devices state"""
+        if state not None:
+            self.state = state
+            return True
+        return False
+
     def worker(self):
         """Do something each cycle of `worker_frequency`
             Update fluid, pull inputs, push outputs, etc.
@@ -115,17 +122,13 @@ class Device(yaml.YAMLObject):
 class Pump(Device):
     yaml_tag = u'!pump'
 
-    def __init__(self, device_type='pump', state='off', **kwargs):
+    def __init__(self, device_type='pump', state=False, **kwargs):
         super(Pump, self).__init__(device_type=device_type, state=state, **kwargs)
 
     def worker(self):
         """Manipulate the fluid just as this device would in the real world
         """
-        if self.state == 'off':
-            # Pump is off, do nothing
-            pass
-
-        elif self.state == 'on':
+        if self.state:
             # Pump is on
             for i in self.inputs:
                 #log.debug("%s Getting input from %s" % (self, self.inputs[i]))
@@ -133,7 +136,7 @@ class Pump(Device):
                 self.inputs[i].output(self)
 
     def input(self, fluid, volume=1):
-        if self.state == 'on':
+        if self.state:
             self.fluid = fluid
             for o in self.outputs:
                 # Send fluid to all outputs
@@ -143,36 +146,36 @@ class Pump(Device):
             return 0
 
     def output(self, to_device, volume=1):
-        if self.state == 'on':
+        if self.state:
             return self.fluid
         else:
             return 0
 
     def turn_on(self):
-        self.state = 'on'
+        self.state = True
 
     def turn_off(self):
-        self.state = 'off'
+        self.state = False
 
 
 class Valve(Device):
     yaml_tag = u'!valve'
 
-    def __init__(self, device_type='valve', state='closed', **kwargs):
+    def __init__(self, device_type='valve', state=False, **kwargs):
         super(Valve, self).__init__(device_type=device_type, state=state, **kwargs)
 
     def open(self):
-        self.state = 'open'
+        self.state = True
 
     def close(self):
-        self.state = 'closed'
+        self.state = False
 
     def output(self, to_device, volume=1):
         """If the valve is open, pull `volume` amount from connected devices
             TODO: Handle multiple inputs and outputs. Distributing the volume across
             all based on valve capacity.
         """
-        if self.state == 'open':
+        if self.state:
             available_volume = 0
             for i in self.inputs:
                 available_volume = self.inputs[i].output(self, volume=volume)
@@ -185,7 +188,7 @@ class Valve(Device):
         """If the valve is open, pass `volume` amount of `fluid` to the connected devices
             Normally used when pump's push fluid through.
         """
-        if self.state == 'open':
+        if self.state:
             accepted_volume = 0
             for o in self.outputs:
                 # Send the fluid on to all outputs

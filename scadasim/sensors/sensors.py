@@ -9,6 +9,7 @@ log = logging.getLogger('scadasim')
 class Sensor(Device):
     def __init__(self, worker_frequency=1, **kwargs):
         self.fluid = None
+        self.device_to_monitor = None
         super(Sensor, self).__init__(device_type="sensor", worker_frequency=worker_frequency, **kwargs)
 
     def output(self, to_device, volume):
@@ -43,9 +44,15 @@ class Sensor(Device):
 
     def read_sensor(self):
         """ Report sensor value
-             Override this to customize the data reported
+             Override this to customize the data reported back to PLC
         """
         return self.fluid
+        
+    def write_sensor(self, value=None):
+        """ Override this to do something to the device when PLC receives write commands
+            E.g. open/close valve
+        """
+        pass
 
 class pHSensor(Sensor):
     yaml_tag = u'!ph'
@@ -77,26 +84,21 @@ class pHSensor(Sensor):
 class StateSensor(Sensor):
     yaml_tag = u'!state'
 
-    states = {
-        'on': True,
-        'open': True,
-        'off': False,
-        'closed': False
-    }
-
     def __init__(self, connected_to=None, **kwargs):
         self.device_to_monitor = connected_to
         super(Sensor, self).__init__(device_type="sensor", **kwargs)
 
-    def worker(self):
-        """Get the state of `device_to_monitor`
-        """
-        self.state = self.states[self.device_to_monitor.read_state()]
-
     def read_sensor(self):
-        """ Report sensor value
+        """ Report device state
         """
-        return self.state
+        return self.device_to_monitor.read_state()
+
+    def write_sensor(self, state=None):
+        """ set device state
+        """
+        if state not None:
+            self.device_to_monitor.write_state(state)
+        
 
 class VolumeSensor(Sensor):
     yaml_tag = u'!volume'
@@ -107,7 +109,7 @@ class VolumeSensor(Sensor):
         super(Sensor, self).__init__(device_type="sensor", **kwargs)
 
     def worker(self):
-        """Get the state of `device_to_monitor`
+        """Get the volume of `device_to_monitor`
         """
         self.volume = self.device_to_monitor.volume
 
