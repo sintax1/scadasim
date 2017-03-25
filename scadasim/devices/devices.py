@@ -91,7 +91,7 @@ class Device(yaml.YAMLObject):
 
     def write_state(self, state=None):
         """ Set the devices state"""
-        if state not None:
+        if state is not None:
             self.state = state
             return True
         return False
@@ -122,7 +122,8 @@ class Device(yaml.YAMLObject):
 class Pump(Device):
     yaml_tag = u'!pump'
 
-    def __init__(self, device_type='pump', state=False, **kwargs):
+    def __init__(self, device_type='pump', state='off', **kwargs):
+        state = bool(['off', 'on'].index(state))
         super(Pump, self).__init__(device_type=device_type, state=state, **kwargs)
 
     def worker(self):
@@ -161,7 +162,8 @@ class Pump(Device):
 class Valve(Device):
     yaml_tag = u'!valve'
 
-    def __init__(self, device_type='valve', state=False, **kwargs):
+    def __init__(self, device_type='valve', state='closed', **kwargs):
+        state = bool(['closed', 'open'].index(state))
         super(Valve, self).__init__(device_type=device_type, state=state, **kwargs)
 
     def open(self):

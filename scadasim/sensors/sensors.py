@@ -96,7 +96,7 @@ class StateSensor(Sensor):
     def write_sensor(self, state=None):
         """ set device state
         """
-        if state not None:
+        if state is not None:
             self.device_to_monitor.write_state(state)
         
 
