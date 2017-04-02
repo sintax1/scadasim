@@ -7,6 +7,8 @@ logging.basicConfig()
 log = logging.getLogger('scadasim')
 log.setLevel(logging.WARN)
 
+
+
 class Simulator(object):
 
     def __init__(self, dbus=False, debug=0):
@@ -45,8 +47,10 @@ class Simulator(object):
         if self.dbus:
             for plc in self.plcs:
                 for sensor in self.plcs[plc]['sensors']:
-                    self.plcs[plc]['sensors'][sensor]['read_sensor'] = self.sensors[sensor].read_sensor
-                    self.plcs[plc]['sensors'][sensor]['write_sensor'] = self.sensors[sensor].write_sensor
+                    self.plcs[plc]['sensors'][sensor][
+                        'read_sensor'] = self.sensors[sensor].read_sensor
+                    self.plcs[plc]['sensors'][sensor][
+                        'write_sensor'] = self.sensors[sensor].write_sensor
             self.dbusservice.load_plcs(self.plcs)
             self.dbusservice.set_speed(self.settings['speed'])
             self.dbusservice.activate()

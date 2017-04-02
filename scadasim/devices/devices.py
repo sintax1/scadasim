@@ -130,10 +130,7 @@ class Pump(Device):
         """Manipulate the fluid just as this device would in the real world
         """
         if self.state:
-            # Pump is on
             for i in self.inputs:
-                #log.debug("%s Getting input from %s" % (self, self.inputs[i]))
-                # Draw from all inputs inputs
                 self.inputs[i].output(self)
 
     def input(self, fluid, volume=1):

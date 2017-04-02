@@ -71,8 +71,6 @@ class pHSensor(Sensor):
         
         accepted_volume = 0
         for o in self.outputs:
-            # Send the fluid on to all outputs
-            #log.debug("%s sending fluid to %s" % (self, self.outputs[o]))
             accepted_volume = self.outputs[o].input(fluid, volume)
         return accepted_volume
 
