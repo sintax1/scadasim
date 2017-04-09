@@ -1,5 +1,9 @@
 FROM ubuntu:latest
 
+# Add http proxies so container can download packages
+ENV http_proxy=http://apcwebproxy.secure.root9b.com:3128
+ENV https_proxy=http://apcwebproxy.secure.root9b.com:3128
+
 RUN apt-get update && \
     apt-get -y install git python python-pip
 
