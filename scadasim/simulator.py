@@ -25,7 +25,7 @@ class Simulator(object):
         if debug >= 2:
             log.setLevel(logging.DEBUG)
 
-        self.plcservice = PLCRPCServer()
+        self.plcservice = PLCRPCServer(rpc_ip="0.0.0.0", rpc_port=8000)
 
     def load_yml(self, path_to_yaml_config):
         """Read and parse YAML configuration file into simulator devices
@@ -55,7 +55,7 @@ class Simulator(object):
                 self.plcs[plc]['sensors'][sensor][
                     'write_sensor'] = self.sensors[sensor].write_sensor
         self.plcservice.loadPLCs(self.plcs)
-        self.plcservice.activate()
+        self.plcservice.start()
 
     def pause(self):
         """Pause the simulation"""
@@ -65,7 +65,8 @@ class Simulator(object):
         for sensor in self.sensors.values():
             sensor.deactivate()
 
-        self.plcservice.deactivate()
+        self.plcservice.stop_server()
+        self.plcservice.join()
 
     def stop(self):
         """Stop and destroy the simulation"""
