@@ -9,7 +9,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '-c', '--config', help='YAML configuration file to load', required=True)
     parser.add_argument('-v', '--verbose', help='Set verbosity level',
-                        default=0, choices=[0, 1, 2], action='store')
+                        type=int, default=0, choices=[0, 1, 2], action='store')
     args = parser.parse_args()
 
     sim = Simulator(debug=args.verbose)
