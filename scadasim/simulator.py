@@ -1,27 +1,31 @@
 import threading
 from scadasim.utils import parse_yml, build_simulation
 import sys
+import SimpleXMLRPCServer
 import logging
+from plcrpcservice import PLCRPCServer
 
 logging.basicConfig()
 log = logging.getLogger('scadasim')
 log.setLevel(logging.WARN)
 
 
-
 class Simulator(object):
 
-    def __init__(self, dbus=False, debug=0):
-        self.dbus = dbus
+    def __init__(self, debug=0):
+        self.path_to_yaml_config = None
+        self.config = None
+        self.settings = None
+        self.devices = None
+        self.sensors = None
+        self.plcs = None
 
         if debug == 1:
             log.setLevel(logging.INFO)
         if debug >= 2:
             log.setLevel(logging.DEBUG)
 
-        if self.dbus:
-            from dbusservice import DBusService
-            self.dbusservice = DBusService()
+        self.plcservice = PLCRPCServer()
 
     def load_yml(self, path_to_yaml_config):
         """Read and parse YAML configuration file into simulator devices
@@ -44,16 +48,14 @@ class Simulator(object):
         for sensor in self.sensors.values():
             sensor.activate()
 
-        if self.dbus:
-            for plc in self.plcs:
-                for sensor in self.plcs[plc]['sensors']:
-                    self.plcs[plc]['sensors'][sensor][
-                        'read_sensor'] = self.sensors[sensor].read_sensor
-                    self.plcs[plc]['sensors'][sensor][
-                        'write_sensor'] = self.sensors[sensor].write_sensor
-            self.dbusservice.load_plcs(self.plcs)
-            self.dbusservice.set_speed(self.settings['speed'])
-            self.dbusservice.activate()
+        for plc in self.plcs:
+            for sensor in self.plcs[plc]['sensors']:
+                self.plcs[plc]['sensors'][sensor][
+                    'read_sensor'] = self.sensors[sensor].read_sensor
+                self.plcs[plc]['sensors'][sensor][
+                    'write_sensor'] = self.sensors[sensor].write_sensor
+        self.plcservice.loadPLCs(self.plcs)
+        self.plcservice.activate()
 
     def pause(self):
         """Pause the simulation"""
@@ -63,8 +65,7 @@ class Simulator(object):
         for sensor in self.sensors.values():
             sensor.deactivate()
 
-        if self.dbus:
-            self.dbusservice.deactivate()
+        self.plcservice.deactivate()
 
     def stop(self):
         """Stop and destroy the simulation"""
@@ -80,9 +81,6 @@ class Simulator(object):
 
         for sensor in self.sensors.values():
             sensor.speed = speed
-
-        if self.dbus:
-            self.dbusservice.set_speed(speed)
 
     def restart(self):
         """Stop and reload the simulation from the original config"""
