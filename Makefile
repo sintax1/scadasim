@@ -5,9 +5,9 @@ test:
 	py.test tests
 
 run:
-	python -i run.py -c default_config.yml -d
+	python -i run.py -c default_config.yml
 
 debug:
-	python -i run.py -c default_config.yml -d -v
+	python -i run.py -c default_config.yml -v 2
 
 .PHONY: init test run debug
