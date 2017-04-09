@@ -11,5 +11,5 @@ RUN make
 
 COPY scadasim_config.yml scadasim_config.yml
 
-ENTRYPOINT python -i run.py -c scadasim_config.yml -d
+ENTRYPOINT python -i run.py -c scadasim_config.yml
 
