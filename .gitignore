@@ -9,3 +9,6 @@
 
 # Cache
 /*.cache
+
+# pip modules
+/src/
