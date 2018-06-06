@@ -8,7 +8,7 @@ ENV no_proxy=stash.secure.root9b.com
 RUN apt-get update && \
     apt-get -y install git python python-pip
 
-RUN git clone http://stash.secure.root9b.com/scm/dev/scadasim.git
+RUN git clone http://github.com/sintax1/scadasim.git
 
 WORKDIR /scadasim
 
